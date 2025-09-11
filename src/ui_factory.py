@@ -48,10 +48,11 @@ class UIFactory:
                 gr.Checkbox(
                     label="Use Local Model", 
                     value=config["defaults"]["use_local_model"]
-                )gr.Dropdown(
-                    choices=[UIFactory.darkmode, UIFactory.lightmode],
-                    value=config="Theme",
-                    label=UIFactory.darkmode,  
+                ),
+                gr.Dropdown(
+                    choices=["Dark Mode", "Light Mode"],
+                    value="Dark Mode",
+                    label="Theme"
                 )
             ],
             type="messages",
@@ -67,8 +68,3 @@ class UIFactory:
                 gr.LoginButton()
 
             chatbot.render()
-
-        return demo
-    @staticmethod
-    def Images():
-        return), gr.Image(value="path/to/image2.png")] # Placeholder for image listings
