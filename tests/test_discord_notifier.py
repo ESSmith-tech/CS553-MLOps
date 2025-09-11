@@ -77,7 +77,6 @@ class TestFormatFailureMessage:
         expected = """2 out of 5 tests failed for my-org/my-repo: 
 1. tests/test_smoke.py::test_i_fail_always
 2. tests/test_other.py::test_another_failure
-0 out of 5 tests errored for my-org/my-repo: 
 
 Aborted pushing changes to HuggingFace"""
         
@@ -136,7 +135,6 @@ class TestIntegration:
             "2 out of 4 tests failed for my-org/test-repo: ",
             "1. tests/test_smoke.py::test_i_fail_always",
             "2. tests/test_other.py::test_another_failure",
-            "0 out of 4 tests errored for my-org/test-repo: ",
             "",
             "Aborted pushing changes to HuggingFace"
         ]
