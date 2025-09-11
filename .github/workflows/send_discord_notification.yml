@@ -1,0 +1,28 @@
+name: Discord Notification
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+    
+      - name: Download test results artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results
+    
+      - name: Send Discord notification
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          # Install requests if needed (usually available by default)
+          pip install requests
+          
+          # Run the Python notification script
+          python .github/scripts/discord_notifier.py test_results.json "${{ github.repository }}"

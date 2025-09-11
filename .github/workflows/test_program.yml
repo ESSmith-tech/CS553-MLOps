@@ -1,0 +1,70 @@
+name: Test Program
+
+on:
+  workflow_call:
+    outputs:
+      test_status:
+        description: 'Test execution status'
+        value: ${{ jobs.test.outputs.test_status }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    outputs:
+      test_status: ${{ steps.run_tests.outputs.status }}
+    
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install pytest pytest-json-report gradio[oauth] huggingface_hub
+          
+      - name: Run pytest with verbose output
+        id: run_tests
+        env:
+          HF_TOKEN: ${{ secrets.HUGGING_FACE_ACCESS_TOKEN }}
+        run: |
+          # Run pytest with verbose output and capture results
+          set +e  # Don't exit on failure
+          pytest -v --tb=short --json-report --json-report-file=test_results.json
+          TEST_EXIT_CODE=$?
+          set -e
+          
+          # Check if JSON report was created, if not create a basic one
+          if [ ! -f test_results.json ]; then
+            echo '{"summary": {"total": 0, "passed": 0, "failed": 0}, "tests": [], "error": "No tests found or JSON report failed"}' > test_results.json
+          fi
+          
+          # Set output status based on exit code
+          if [ $TEST_EXIT_CODE -eq 0 ]; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "All tests passed!"
+          else
+            echo "status=failure" >> $GITHUB_OUTPUT
+            echo "One or more tests failed!"
+          fi
+          
+          # Display test results for logging
+          echo "Test Results Summary:"
+          cat test_results.json | python3 -m json.tool || echo "Failed to parse JSON"
+          
+          # Exit with the original test exit code
+          exit $TEST_EXIT_CODE
+
+      - name: Upload test results artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test_results.json
+
+  notify:
+    needs: test
+    if: always()
+    uses: ./.github/workflows/send_discord_notification.yml
+    secrets: inherit
