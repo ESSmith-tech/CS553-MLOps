@@ -1,0 +1,46 @@
+{
+  "image_data": [
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/8/8c/Gerome_%C3%A9tude_de_Diogene.jpg",
+      "filename": "Diogenes.jpg"
+    },
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/8/8c/David_-_The_Death_of_Socrates.jpg",
+      "filename": "Socrates.jpg"
+    },
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/1/12/Epicurus_in_Thomas_Stanley_History_of_Philosophy.jpg",
+      "filename": "Epicurus.jpg"
+    },
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Marcus_Aurelius_Distributing_Bread_to_the_People_1765_Joseph-Marie_Vien.jpg",
+      "filename": "Aurelius.jpg"
+    },
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/d/da/Laozi_%289849065883%29.jpg",
+      "filename": "Laozi.jpg"
+    },
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/%E5%90%B4%E5%8F%B8%E9%A9%AC%E5%AD%99%E6%AD%A6.jpg",
+      "filename": "Suntzu.jpg"
+    }
+  ],
+  "image_quality": 95,
+  "transform_parameters": {
+    "convert_to_grayscale": true,
+    "resize": {
+      "enabled": true,
+      "base_size": 280,
+      "aspect_ratio": {
+        "width_multiplier": 4,
+        "height_multiplier": 3
+      },
+      "resampling": "LANCZOS"
+    },
+    "output_format": "JPEG"
+  },
+  "output_directory": "images",
+  "request_headers": {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+  }
+}

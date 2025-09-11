@@ -1,7 +1,9 @@
 import gradio as gr
 from typing import Dict, Any
+import os
 
 from src.chat_handler import ChatHandler
+from src.ui_image_scraper import UIImageScraper
 
 class UIFactory:
     theme = gr.themes.Default()
@@ -10,12 +12,24 @@ class UIFactory:
     @staticmethod
     def create_chatbot_interface(chat_handler: ChatHandler, config: Dict[str, Any]) -> gr.ChatInterface:
         """Create the main chatbot interface"""
+        image_paths = UIImageScraper().download_images_to_local()
+        gallery_items = [(img_path, os.path.basename(img_path).rsplit('.', 1)[0]) for img_path in image_paths]
+
         return gr.ChatInterface(
             fn=chat_handler.respond,
             additional_inputs=[
                 gr.Textbox(
                     value=config["defaults"]["system_message"],
                     label="System message"
+                ),
+                gr.Gallery(
+                    value=gallery_items,
+                    label="Philosopher Images",
+                    object_fit="contain",
+                    elem_id="image-gallery",
+                    columns=3,
+                    height="auto",
+                    show_label=True
                 ),
                 gr.Gallery(
                     value=UIFactory.Images(),
