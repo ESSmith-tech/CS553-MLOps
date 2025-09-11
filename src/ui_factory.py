@@ -2,9 +2,11 @@ import gradio as gr
 from typing import Dict, Any
 
 from src.chat_handler import ChatHandler
+from src.ui_image_scraper import UIImageScraper
 
 class UIFactory:
     theme = gr.themes.Default()
+    UIImageScraper.download_images_to_local()
 
     """Factory for creating UI components"""
     @staticmethod
