@@ -6,7 +6,7 @@ from src.ui_image_scraper import UIImageScraper
 
 class UIFactory:
     theme = gr.themes.Default()
-    UIImageScraper().download_images_to_local()
+    image_list = UIImageScraper().download_images_to_local()
 
     """Factory for creating UI components"""
     @staticmethod
@@ -18,6 +18,15 @@ class UIFactory:
                 gr.Textbox(
                     value=config["defaults"]["system_message"],
                     label="System message"
+                ),
+                gr.Gallery(
+                    value=UIFactory.image_list,
+                    label="Philosopher Images",
+                    object_fit="contain",
+                    elem_id="image-gallery",
+                    columns=3,
+                    height="auto",
+                    show_label=True
                 ),
                 gr.Slider(
                     minimum=config["parameters"]["max_tokens"]["min"], 
