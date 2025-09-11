@@ -61,9 +61,10 @@ def format_failure_message(data: Dict[str, Any], repository: str) -> str:
     for i, test_name in enumerate(failed_test_names, 1):
         message_lines.append(f"{i}. {test_name}")
 
-    message_lines.append(f"{errored_tests} out of {total_tests} tests errored for {repository}: ")
-    for i, test_name in enumerate(errored_test_names, 1):
-        message_lines.append(f"{i}. {test_name}")
+    if errored_tests > 0:
+        message_lines.append(f"{errored_tests} out of {total_tests} tests errored for {repository}: ")
+        for i, test_name in enumerate(errored_test_names, 1):
+            message_lines.append(f"{i}. {test_name}")
     
     message_lines.append("")  # Empty line
     message_lines.append("Aborted pushing changes to HuggingFace")
