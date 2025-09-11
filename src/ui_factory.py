@@ -32,11 +32,13 @@ class UIFactory:
                     show_label=True
                 ),
                 gr.Gallery(
-                    value=UIFactory.Images(),
-                    label="Available Images",
-                    columns=4,
+                    value=gallery_items,
+                    label="Philosopher Images",
                     object_fit="contain",
-                    height="auto"
+                    elem_id="image-gallery",
+                    columns=3,
+                    height="auto",
+                    show_label=True
                 ),
                 gr.Slider(
                     minimum=config["parameters"]["max_tokens"]["min"], 
