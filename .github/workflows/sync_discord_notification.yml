@@ -1,0 +1,16 @@
+name: Sync Discord Notification
+
+on: workflow_call
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Sync Discord notification
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d "{\"content\": \"The product was synced to Hugging Face! Lego Mace Windu, out!!\"}" \
+          $DISCORD_WEBHOOK_URL

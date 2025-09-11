@@ -1,0 +1,43 @@
+name: Sync to Hugging Face
+
+on:
+  push:
+  
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+  workflow_dispatch:
+
+env:
+    HF_TOKEN: ${{ secrets.HUGGING_FACE_ACCESS_TOKEN }}
+
+jobs:
+  run-tests:
+    # Only run if the PR was merged (not just closed)
+    if: github.event_name == 'push' || github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/test_program.yml
+    secrets: inherit
+  
+  sync-to-hub:
+    # This makes sync depend on a success state from run-test
+    needs: run-tests    
+    if: (github.event_name == 'push' || github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch') && needs.run-tests.result == 'success'
+    
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          lfs: true
+          
+      - name: Push to hub
+        env:
+          HF_TOKEN: ${{ secrets.HUGGING_FACE_ACCESS_TOKEN }}
+        run: git push --force https://essmither46er:$HF_TOKEN@huggingface.co/spaces/essmith46er/CSDS553_Demo HEAD:main
+
+  announce-success:
+    needs: sync-to-hub
+    if: needs.sync-to-hub.result == 'success'
+    uses: ./.github/workflows/sync_discord_notification.yml
+    secrets: inherit
