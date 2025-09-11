@@ -42,3 +42,14 @@ def test_app_prompts_json_exists():
     with open(prompts_path, 'r') as f:
         prompts_data = json.load(f)
     assert isinstance(prompts_data, dict), "app_prompts.json should contain a JSON object"
+
+def test_ui_scraper_config_json_exists():
+    """Test that ui_scraper_config.json exists and is valid JSON."""
+    prompts_path = os.path.join(os.path.dirname(__file__), '..', 'cm', 'ui_scraper_config.json')
+    
+    assert os.path.exists(prompts_path) and os.path.isfile(prompts_path), \
+        f"ui_scraper_config.json does not exist at: {prompts_path}"
+    
+    with open(prompts_path, 'r') as f:
+        prompts_data = json.load(f)
+    assert isinstance(prompts_data, dict), "ui_scraper_config.json should contain a JSON object"

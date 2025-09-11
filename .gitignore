@@ -8,3 +8,7 @@ __pycache__/
 *.env
 *.vscode/
 *.qodo
+images/
+*.jpg
+*.jpeg
+*.png
