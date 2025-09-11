@@ -7,7 +7,6 @@ from src.ui_image_scraper import UIImageScraper
 
 class UIFactory:
     theme = gr.themes.Default()
-    image_list = UIImageScraper().download_images_to_local()
 
     """Factory for creating UI components"""
     @staticmethod
