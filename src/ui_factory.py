@@ -14,7 +14,7 @@ class UIFactory:
     def create_chatbot_interface(chat_handler: ChatHandler, config: Dict[str, Any]) -> gr.ChatInterface:
         """Create the main chatbot interface"""
         image_paths = UIImageScraper().download_images_to_local()
-        gallery_items = [(img_path, os.path.basename(img_path)) for img_path in image_paths]
+        gallery_items = [(img_path, os.path.basename(img_path).rsplit('.', 1)[0]) for img_path in image_paths]
 
         return gr.ChatInterface(
             fn=chat_handler.respond,
