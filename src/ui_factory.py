@@ -17,6 +17,13 @@ class UIFactory:
                     value=config["defaults"]["system_message"],
                     label="System message"
                 ),
+                gr.Gallery(
+                    value=UIFactory.Images(),
+                    label="Available Images",
+                    columns=4,
+                    object_fit="contain",
+                    height="auto"
+                ),
                 gr.Slider(
                     minimum=config["parameters"]["max_tokens"]["min"], 
                     maximum=config["parameters"]["max_tokens"]["max"], 
@@ -41,6 +48,10 @@ class UIFactory:
                 gr.Checkbox(
                     label="Use Local Model", 
                     value=config["defaults"]["use_local_model"]
+                )gr.Dropdown(
+                    choices=[UIFactory.darkmode, UIFactory.lightmode],
+                    value=config="Theme",
+                    label=UIFactory.darkmode,  
                 )
             ],
             type="messages",
@@ -58,3 +69,6 @@ class UIFactory:
             chatbot.render()
 
         return demo
+    @staticmethod
+    def Images():
+        return), gr.Image(value="path/to/image2.png")] # Placeholder for image listings
