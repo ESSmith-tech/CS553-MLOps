@@ -1,6 +1,8 @@
 {
   "ui": {
-    "title": "Fancy AI Chatbot"
+    "title": "Choose your Philosopher",
+    "color": "white",
+    "font-size": "30px"
   },
   "model": {
     "local_model_name": "HuggingFaceTB/SmolLM2-1.7B-Instruct",
