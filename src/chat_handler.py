@@ -17,7 +17,8 @@ class ChatHandler:
                       system_prompt: str) -> List[Dict[str, str]]:
         """Build message list from history and current message, using system_prompt from prompt_config"""
         messages = [{"role": "system", "content": system_prompt}]
-        messages.extend(history[-self.config["history_limit"]:])
+        if self.config["history_limit"] > 0: # -1 means no memory
+            messages.extend(history[-self.config["history_limit"]:])
         messages.append({"role": "user", "content": message})
         return messages
     
