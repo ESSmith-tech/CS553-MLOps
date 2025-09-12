@@ -1,30 +1,66 @@
+
 from typing import List, Dict, Generator, Optional, Any
 import gradio as gr
 from src.model_manager import ModelManager
 import time
+import os
 
 class ChatHandler:
     """Handles chat interactions and response generation"""
     
-    def __init__(self, model_manager: ModelManager, config: Dict[str, Any]):
+    def __init__(self, model_manager: ModelManager, config: Dict[str, Any], prompts: Dict[str, Any]):
         self.model_manager = model_manager
         self.config = config
+        self.prompts = prompts
     
     def build_messages(self, message: str, history: List[Dict[str, str]], 
-                      system_message: str) -> List[Dict[str, str]]:
-        """Build message list from history and current message"""
-        messages = [{"role": "system", "content": system_message}]
-        messages.extend(history)
+                      system_prompt: str) -> List[Dict[str, str]]:
+        """Build message list from history and current message, using system_prompt from prompt_config"""
+        messages = [{"role": "system", "content": system_prompt}]
+        if self.config["history_limit"] > 0: # -1 means no memory
+            messages.extend(history[-self.config["history_limit"]:])
         messages.append({"role": "user", "content": message})
         return messages
     
-    def respond(self, message: str, history: List[Dict[str, str]], system_message: str,
-               max_tokens: int, temperature: float, top_p: float, 
-               hf_token: Optional[gr.OAuthToken], use_local_model: bool) -> Generator[str, None, None]:
-        """Generate response to user message"""
-        
-        messages = self.build_messages(message, history, system_message)
-        
+    def respond(self, 
+                message: str, 
+                history: List[Dict[str, str]], 
+                gallery: Any,
+                max_tokens: int, 
+                temperature: float, 
+                top_p: float, 
+                use_local_model: bool,
+                hf_token: Optional[gr.OAuthToken]) -> Generator[str, None, None]:
+        """Generate response to user message, using prompt from prompt_config based on gallery selection"""
+
+        # Determine selected philosopher from gallery input
+        prompts = self.prompts
+
+        selected_philosopher = None
+        if gallery:
+            # Gradio Gallery returns the selected image path as a string
+            if isinstance(gallery, str):
+                # Extract filename without extension
+                selected_philosopher = os.path.splitext(os.path.basename(gallery))[0]
+                
+            elif isinstance(gallery, list) and len(gallery) > 0:
+                # Sometimes Gallery returns a list of selected items
+                item = gallery[0]
+                if isinstance(item, str):
+                    selected_philosopher = os.path.splitext(os.path.basename(item))[0]
+                elif isinstance(item, (list, tuple)) and len(item) > 0:
+                    selected_philosopher = os.path.splitext(os.path.basename(item[0]))[0]
+
+        # Fallback: use first key in prompt_config if nothing selected
+        if not selected_philosopher and prompts:
+            selected_philosopher = next(iter(prompts.keys()))
+
+        # Get introduction/system prompt
+        system_prompt = ""
+        if selected_philosopher and prompts and selected_philosopher in prompts:
+            system_prompt = prompts[selected_philosopher].get("introduction", "")
+        messages = self.build_messages(message, history, system_prompt)
+
         if use_local_model:
             yield from self._handle_local_model(messages, max_tokens, temperature, top_p)
         else:

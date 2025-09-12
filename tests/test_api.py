@@ -12,19 +12,20 @@ class DummyToken:
 def chat_handler():
     config = ConfigManager().load_config()
     model_manager = ModelManager(config)
-    return ChatHandler(model_manager, config)
+    prompts = ConfigManager().load_prompts()
+    return ChatHandler(model_manager, config, prompts)
 
 def test_api_requires_token(chat_handler):
     # Should yield login_required message if token is missing
     gen = chat_handler.respond(
         message="Hi",
         history=[],
-        system_message="test",
+        gallery=None,
         max_tokens=8,
         temperature=0.2,
         top_p=0.9,
         hf_token=None,
-        use_local_model=False,
+        use_local_model=False
     )
     first = next(gen)
     assert "log in" in first.lower() or "required" in first.lower()
@@ -36,12 +37,12 @@ def test_api_with_token(chat_handler):
     gen = chat_handler.respond(
         message="Hi",
         history=[],
-        system_message="test",
+        gallery=None,
         max_tokens=8,
         temperature=0.2,
         top_p=0.9,
         hf_token=DummyToken(hf_token),
-        use_local_model=False,
+        use_local_model=False
     )
     first = next(gen)
     assert isinstance(first, str)

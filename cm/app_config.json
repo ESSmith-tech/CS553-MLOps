@@ -30,6 +30,7 @@
       "step": 0.05
     }
   },
+  "history_limit": -1,
   "messages": {
     "loading_message": "📄 Local model is still loading in the background. Your message has been queued and will be processed once the model is ready...",
     "model_ready": "✅ Model loaded! Processing your message...",

@@ -24,7 +24,7 @@ class ChatApp:
         self.css = self.config_manager.load_css()
         
         self.model_manager = ModelManager(self.config)
-        self.chat_handler = ChatHandler(self.model_manager, self.config)
+        self.chat_handler = ChatHandler(self.model_manager, self.config, self.prompts)
         
         self.chatbot = UIFactory.create_chatbot_interface(self.chat_handler, self.config)
         self.demo = UIFactory.create_main_interface(self.chatbot, self.config, self.css)

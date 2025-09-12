@@ -17,13 +17,14 @@ def model_manager(config):
 @pytest.fixture
 def chat_handler(config):
     model_manager = ModelManager(config)
-    return ChatHandler(model_manager, config)
+    prompts = ConfigManager().load_prompts()
+    return ChatHandler(model_manager, config, prompts)
 
 def test_build_messages(chat_handler):
     msg = "hello"
     history = [{"role": "user", "content": "hi"}]
-    sys_msg = "sys"
-    messages = chat_handler.build_messages(msg, history, sys_msg)
+    system_prompt = "sys"
+    messages = chat_handler.build_messages(msg, history, system_prompt)
     assert messages[0]["role"] == "system"
     assert messages[-1]["content"] == "hello"
 
@@ -31,12 +32,12 @@ def test_respond_login_required(chat_handler, config):
     gen = chat_handler.respond(
         message="Hi",
         history=[],
-        system_message="test",
+        gallery=None,
         max_tokens=8,
         temperature=0.2,
         top_p=0.9,
         hf_token=None,
-        use_local_model=False,
+        use_local_model=False
     )
     first = next(gen)
     assert config["messages"]["login_required"].split()[0] in first
@@ -48,12 +49,12 @@ def test_respond_local_model_not_ready(chat_handler, config):
     gen = chat_handler.respond(
         message="Hi",
         history=[],
-        system_message="test",
+        gallery=None,
         max_tokens=8,
         temperature=0.2,
         top_p=0.9,
         hf_token=None,
-        use_local_model=True,
+        use_local_model=True
     )
     first = next(gen)
     assert config["messages"]["model_load_failed"] in first
