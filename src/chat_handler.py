@@ -11,9 +11,9 @@ class ChatHandler:
         self.config = config
     
     def build_messages(self, message: str, history: List[Dict[str, str]], 
-                      system_message: str) -> List[Dict[str, str]]:
-        """Build message list from history and current message"""
-        messages = [{"role": "system", "content": system_message}]
+                      system_prompt: str) -> List[Dict[str, str]]:
+        """Build message list from history and current message, using system_prompt from prompt_config"""
+        messages = [{"role": "system", "content": system_prompt}]
         messages.extend(history)
         messages.append({"role": "user", "content": message})
         return messages
@@ -21,21 +21,30 @@ class ChatHandler:
     def respond(self, 
                 message: str, 
                 history: List[Dict[str, str]], 
-                system_message: str,
                 gallery: Any,
                 max_tokens: int, 
                 temperature: float, 
                 top_p: float, 
                 use_local_model: bool,
-                theme: str,
                 hf_token: Optional[gr.OAuthToken]) -> Generator[str, None, None]:
-        """Generate response to user message"""
-        
-        # AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        """TODO: FINALLY MAKE IT THINK IT'S PEOPLE"""
-        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        """Generate response to user message, using prompt from prompt_config based on gallery selection"""
 
-        messages = self.build_messages(message, history, system_message)
+        # Determine selected philosopher from gallery input
+        prompt_config = self.config.get("prompt_config") or self.config.get("prompts")
+        selected_philosopher = None
+        if gallery and isinstance(gallery, list) and len(gallery) > 0:
+            # Gallery returns a list of selected items, each item is (img_path, label)
+            # We use the label (e.g., "Diogenes") to match prompt_config
+            selected_philosopher = gallery[0][1] if isinstance(gallery[0], (list, tuple)) and len(gallery[0]) > 1 else None
+        # Fallback: use first key in prompt_config if nothing selected
+        if not selected_philosopher and prompt_config:
+            selected_philosopher = next(iter(prompt_config.keys()))
+        # Get introduction/system prompt
+
+        system_prompt = ""
+        if selected_philosopher and prompt_config and selected_philosopher in prompt_config:
+            system_prompt = prompt_config[selected_philosopher].get("introduction", "")
+        messages = self.build_messages(message, history, system_prompt)
         
         if use_local_model:
             yield from self._handle_local_model(messages, max_tokens, temperature, top_p)

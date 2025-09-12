@@ -18,10 +18,6 @@ class UIFactory:
         return gr.ChatInterface(
             fn=chat_handler.respond,
             additional_inputs=[
-                gr.Textbox(
-                    value=config["defaults"]["system_message"],
-                    label="System message"
-                ),
                 gr.Gallery(
                     value=gallery_items,
                     label="Philosopher Images",
@@ -55,11 +51,6 @@ class UIFactory:
                 gr.Checkbox(
                     label="Use Local Model", 
                     value=config["defaults"]["use_local_model"]
-                ),
-                gr.Dropdown(
-                    choices=["Dark Mode", "Light Mode"],
-                    value="Dark Mode",
-                    label="Theme"
                 )
             ],
             type="messages",
