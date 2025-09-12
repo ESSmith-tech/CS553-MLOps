@@ -17,7 +17,8 @@ def model_manager(config):
 @pytest.fixture
 def chat_handler(config):
     model_manager = ModelManager(config)
-    return ChatHandler(model_manager, config)
+    prompts = ConfigManager().load_prompts()
+    return ChatHandler(model_manager, config, prompts)
 
 def test_build_messages(chat_handler):
     msg = "hello"

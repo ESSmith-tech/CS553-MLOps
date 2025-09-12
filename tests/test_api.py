@@ -12,7 +12,8 @@ class DummyToken:
 def chat_handler():
     config = ConfigManager().load_config()
     model_manager = ModelManager(config)
-    return ChatHandler(model_manager, config)
+    prompts = ConfigManager().load_prompts()
+    return ChatHandler(model_manager, config, prompts)
 
 def test_api_requires_token(chat_handler):
     # Should yield login_required message if token is missing

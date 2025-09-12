@@ -6,9 +6,10 @@ import time
 class ChatHandler:
     """Handles chat interactions and response generation"""
     
-    def __init__(self, model_manager: ModelManager, config: Dict[str, Any]):
+    def __init__(self, model_manager: ModelManager, config: Dict[str, Any], prompts: Dict[str, Any]):
         self.model_manager = model_manager
         self.config = config
+        self.prompts = prompts
     
     def build_messages(self, message: str, history: List[Dict[str, str]], 
                       system_prompt: str) -> List[Dict[str, str]]:
@@ -30,22 +31,22 @@ class ChatHandler:
         """Generate response to user message, using prompt from prompt_config based on gallery selection"""
 
         # Determine selected philosopher from gallery input
-        prompt_config = self.config.get("prompt_config") or self.config.get("prompts")
+        prompts = self.prompts
         selected_philosopher = None
         if gallery and isinstance(gallery, list) and len(gallery) > 0:
             # Gallery returns a list of selected items, each item is (img_path, label)
             # We use the label (e.g., "Diogenes") to match prompt_config
             selected_philosopher = gallery[0][1] if isinstance(gallery[0], (list, tuple)) and len(gallery[0]) > 1 else None
         # Fallback: use first key in prompt_config if nothing selected
-        if not selected_philosopher and prompt_config:
-            selected_philosopher = next(iter(prompt_config.keys()))
+        if not selected_philosopher and prompts:
+            selected_philosopher = next(iter(prompts.keys()))
         # Get introduction/system prompt
 
         system_prompt = ""
-        if selected_philosopher and prompt_config and selected_philosopher in prompt_config:
-            system_prompt = prompt_config[selected_philosopher].get("introduction", "")
+        if selected_philosopher and prompts and selected_philosopher in prompts:
+            system_prompt = prompts[selected_philosopher].get("introduction", "")
         messages = self.build_messages(message, history, system_prompt)
-        
+
         if use_local_model:
             yield from self._handle_local_model(messages, max_tokens, temperature, top_p)
         else:
