@@ -1,7 +1,9 @@
+
 from typing import List, Dict, Generator, Optional, Any
 import gradio as gr
 from src.model_manager import ModelManager
 import time
+import os
 
 class ChatHandler:
     """Handles chat interactions and response generation"""
@@ -15,7 +17,7 @@ class ChatHandler:
                       system_prompt: str) -> List[Dict[str, str]]:
         """Build message list from history and current message, using system_prompt from prompt_config"""
         messages = [{"role": "system", "content": system_prompt}]
-        messages.extend(history)
+        messages.extend(history[-self.config["history_limit"]:])
         messages.append({"role": "user", "content": message})
         return messages
     
@@ -32,16 +34,27 @@ class ChatHandler:
 
         # Determine selected philosopher from gallery input
         prompts = self.prompts
+
         selected_philosopher = None
-        if gallery and isinstance(gallery, list) and len(gallery) > 0:
-            # Gallery returns a list of selected items, each item is (img_path, label)
-            # We use the label (e.g., "Diogenes") to match prompt_config
-            selected_philosopher = gallery[0][1] if isinstance(gallery[0], (list, tuple)) and len(gallery[0]) > 1 else None
+        if gallery:
+            # Gradio Gallery returns the selected image path as a string
+            if isinstance(gallery, str):
+                # Extract filename without extension
+                selected_philosopher = os.path.splitext(os.path.basename(gallery))[0]
+                
+            elif isinstance(gallery, list) and len(gallery) > 0:
+                # Sometimes Gallery returns a list of selected items
+                item = gallery[0]
+                if isinstance(item, str):
+                    selected_philosopher = os.path.splitext(os.path.basename(item))[0]
+                elif isinstance(item, (list, tuple)) and len(item) > 0:
+                    selected_philosopher = os.path.splitext(os.path.basename(item[0]))[0]
+
         # Fallback: use first key in prompt_config if nothing selected
         if not selected_philosopher and prompts:
             selected_philosopher = next(iter(prompts.keys()))
-        # Get introduction/system prompt
 
+        # Get introduction/system prompt
         system_prompt = ""
         if selected_philosopher and prompts and selected_philosopher in prompts:
             system_prompt = prompts[selected_philosopher].get("introduction", "")
