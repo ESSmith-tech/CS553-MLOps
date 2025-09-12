@@ -75,3 +75,4 @@ class UIFactory:
                 gr.LoginButton()
 
             chatbot.render()
+        return demo

@@ -18,11 +18,23 @@ class ChatHandler:
         messages.append({"role": "user", "content": message})
         return messages
     
-    def respond(self, message: str, history: List[Dict[str, str]], system_message: str,
-               max_tokens: int, temperature: float, top_p: float, 
-               hf_token: Optional[gr.OAuthToken], use_local_model: bool) -> Generator[str, None, None]:
+    def respond(self, 
+                message: str, 
+                history: List[Dict[str, str]], 
+                system_message: str,
+                gallery: Any,
+                max_tokens: int, 
+                temperature: float, 
+                top_p: float, 
+                use_local_model: bool,
+                theme: str,
+                hf_token: Optional[gr.OAuthToken]) -> Generator[str, None, None]:
         """Generate response to user message"""
         
+        # AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        """TODO: FINALLY MAKE IT THINK IT'S PEOPLE"""
+        # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
         messages = self.build_messages(message, history, system_message)
         
         if use_local_model:
