@@ -23,6 +23,12 @@ class UIFactory:
                 print(f"Gallery selected: {evt.value['caption']}")
                 return str(evt.value['caption'])
 
+            gr.Markdown(
+                """
+                # Choose your philosopher
+                """
+            )
+
             # Gallery at the top
             gallery = gr.Gallery(
                 value=gallery_items,
