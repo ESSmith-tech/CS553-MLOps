@@ -32,11 +32,13 @@ def test_respond_login_required(chat_handler, config):
         message="Hi",
         history=[],
         system_message="test",
+        gallery=None,
         max_tokens=8,
         temperature=0.2,
         top_p=0.9,
         hf_token=None,
         use_local_model=False,
+        theme="Dark Mode"
     )
     first = next(gen)
     assert config["messages"]["login_required"].split()[0] in first
@@ -49,11 +51,13 @@ def test_respond_local_model_not_ready(chat_handler, config):
         message="Hi",
         history=[],
         system_message="test",
+        gallery=None,
         max_tokens=8,
         temperature=0.2,
         top_p=0.9,
         hf_token=None,
         use_local_model=True,
+        theme="Dark Mode"
     )
     first = next(gen)
     assert config["messages"]["model_load_failed"] in first

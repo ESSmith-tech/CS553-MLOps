@@ -20,11 +20,13 @@ def test_api_requires_token(chat_handler):
         message="Hi",
         history=[],
         system_message="test",
+        gallery=None,
         max_tokens=8,
         temperature=0.2,
         top_p=0.9,
         hf_token=None,
         use_local_model=False,
+        theme="Dark Mode"
     )
     first = next(gen)
     assert "log in" in first.lower() or "required" in first.lower()
@@ -37,11 +39,13 @@ def test_api_with_token(chat_handler):
         message="Hi",
         history=[],
         system_message="test",
+        gallery=None,
         max_tokens=8,
         temperature=0.2,
         top_p=0.9,
         hf_token=DummyToken(hf_token),
         use_local_model=False,
+        theme="Dark Mode"
     )
     first = next(gen)
     assert isinstance(first, str)
