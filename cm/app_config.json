@@ -1,8 +1,6 @@
 {
   "ui": {
-    "title": "Choose your Philosopher",
-    "color": "white",
-    "font-size": "30px"
+    "value": "<span style='color: white; font-size: 30px'>Choose your Philosopher</span>"
   },
   "model": {
     "local_model_name": "HuggingFaceTB/SmolLM2-1.7B-Instruct",
