@@ -24,9 +24,7 @@ class UIFactory:
                 return str(evt.value['caption'])
 
             gr.Markdown(
-                """
-                # Choose your philosopher
-                """
+                "<span style='color: black;'>Choose your Philosopher</span>"
             )
 
             # Gallery at the top
