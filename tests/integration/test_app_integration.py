@@ -34,7 +34,7 @@ def test_app_api_model_response():
     # Get first response
     first = next(gen)
     assert isinstance(first, str)
-    assert len(first) > 0
+    assert len(first) > 0, f"{gen}"
 
 
 @pytest.mark.integration
