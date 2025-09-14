@@ -30,6 +30,7 @@ def test_app_api_model_response():
         hf_token=token_obj,
         use_local_model=False
     )
+    print(gen)
     # Get first response
     first = next(gen)
     assert isinstance(first, str)
@@ -53,8 +54,8 @@ def test_app_local_model_response():
             if waited > timeout:
                 pytest.fail("Local model did not become ready in time")
         else:
-            # If not loading and not ready, fail
             pytest.fail("Local model is neither loading nor ready")
+            
     # Build a simple chat message
     message = "Hello, local model!"
     history = []
