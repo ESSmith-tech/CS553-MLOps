@@ -4,17 +4,15 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 from src.app import ChatApp
 
 @pytest.mark.integration
-def test_app_api_model_response(monkeypatch):
+def test_app_api_model_response():
     """Test ChatApp end-to-end with API model using HF_TOKEN from environment."""
     hf_token = os.environ.get("HF_TOKEN")
-    if not hf_token:
-        pytest.skip("HF_TOKEN not set in environment")
     app = ChatApp()
     
     message = "Hello, who are you?"
     history = []
-    gallery = None
-    max_tokens = 8
+    gallery = "Diogenes"
+    max_tokens = 128
     temperature = 0.2
     top_p = 0.9
     
