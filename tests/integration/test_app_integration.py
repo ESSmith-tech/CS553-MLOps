@@ -1,4 +1,6 @@
-import os, time, pytest
+import os, time, pytest, sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+
 from src.app import ChatApp
 
 @pytest.mark.integration
@@ -8,18 +10,18 @@ def test_app_api_model_response(monkeypatch):
     if not hf_token:
         pytest.skip("HF_TOKEN not set in environment")
     app = ChatApp()
-    # Build a simple chat message
+    
     message = "Hello, who are you?"
     history = []
     gallery = None
     max_tokens = 8
     temperature = 0.2
     top_p = 0.9
-    # Patch gr.OAuthToken to simulate token object
+    
     class DummyToken:
         def __init__(self, token): self.token = token
     token_obj = DummyToken(hf_token)
-    # Use API model
+    
     gen = app.chat_handler.respond(
         message=message,
         history=history,
@@ -40,9 +42,8 @@ def test_app_api_model_response(monkeypatch):
 def test_app_local_model_response():
     """Test ChatApp end-to-end with local model, waiting for model readiness."""
     app = ChatApp()
-    # Start model loading (if not already started)
     app.model_manager.start_model_loading()
-    # Wait for local model to be ready (timeout after 120s)
+    
     local_model = app.model_manager.local_model
     timeout = 120
     interval = 2
