@@ -12,5 +12,8 @@ hf_oauth_scopes:
 - inference-api
 ---
 
-Let's fix this creature 🥲
+When a developer pushes something to GitHub, it is set up to run tests and sync with Huggingface. If a developer attempts to push a change to GitHub that fails the test or errors while compiling, it will abort the push to HuggingFace, so any poor code that would impact the product doesn’t get to the clients. A message will be sent to our team's Discord server telling us how many of the tests failed and which tests failed.
+
+If all of the tests pass, then GitHub will sync. A message will be sent to the teams that all tests passed and the product was synced with Hugging Face.
+
 Push!!! (#4)
