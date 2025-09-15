@@ -3,9 +3,15 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from src.app import ChatApp
 
+@pytest.mark.skip("API cannot be tested outside of HuggingFace spaces due to OAuth restrictions")
 def test_app_api_model_response():
     """Test ChatApp end-to-end with API model using HF_TOKEN from environment."""
+    class DummyToken:
+        def __init__(self, token): self.token = token
+    
     hf_token = os.environ.get("HF_TOKEN")
+    token_obj = DummyToken(hf_token)
+    
     app = ChatApp()
     
     message = "Hello, who are you?"
@@ -14,10 +20,6 @@ def test_app_api_model_response():
     max_tokens = 128
     temperature = 0.2
     top_p = 0.9
-    
-    class DummyToken:
-        def __init__(self, token): self.token = token
-    token_obj = DummyToken(hf_token)
     
     gen = app.chat_handler.respond(
         message=message,
@@ -29,6 +31,7 @@ def test_app_api_model_response():
         hf_token=token_obj,
         use_local_model=False
     )
+
     chunks = []
     for chunk in gen:
         assert isinstance(chunk, str)
@@ -56,7 +59,7 @@ def test_app_local_model_response():
                 pytest.fail("Local model did not become ready in time")
         else:
             pytest.fail("Local model is neither loading nor ready")
-            
+
     # Build a simple chat message
     message = "Hello, local model!"
     history = []
