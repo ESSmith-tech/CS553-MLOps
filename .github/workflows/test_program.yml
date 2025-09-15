@@ -22,7 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pytest pytest-json-report gradio[oauth] huggingface_hub
+          pip install pytest pytest-json-report gradio[oauth] huggingface_hub torch transformers
           
       - name: Run pytest with verbose output
         id: run_tests
