@@ -29,11 +29,14 @@ def test_app_api_model_response():
         hf_token=token_obj,
         use_local_model=False
     )
-    first = next(gen)
-    assert isinstance(first, str)
+    chunks = []
+    for chunk in gen:
+        assert isinstance(chunk, str)
+        chunks.append(chunk)
     
-    full_response = ''.join(list(gen))
-    assert len(full_response) > 0
+    full_response = ''.join(chunks)
+    assert len(full_response) > 0, f"Response was empty: {chunks}"
+
 
 
 def test_app_local_model_response():
