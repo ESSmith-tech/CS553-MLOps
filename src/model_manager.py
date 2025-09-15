@@ -50,13 +50,21 @@ class LocalModel(ModelInterface):
     
     def generate(self, messages: List[Dict[str, str]], max_tokens: int = 512, 
                 temperature: float = 0.7, top_p: float = 0.9, **kwargs) -> Generator[str, None, None]:
-        """Generate response from local model"""
+        """Generate response from local model (single-turn, avoids self-conversation)"""
         if not self._ready:
             raise RuntimeError("Model not ready")
-        
-        # Build prompt as plain text
-        prompt = "\n".join([f"{m['role']}: {m['content']}" for m in messages])
-        
+
+        # Use only system prompt and latest user message for local model
+        system_msg = next((m['content'] for m in messages if m['role'] == 'system'), "")
+        user_msg = next((m['content'] for m in reversed(messages) if m['role'] == 'user'), "")
+        # Use the selected philosopher's name if present, else 'assistant'
+        assistant_name = "assistant"
+        for m in messages:
+            if m['role'] not in ('system', 'user'):
+                assistant_name = m['role']
+                break
+        prompt = f"system: {system_msg}\nuser: {user_msg}\n{assistant_name}:"
+
         outputs = self.pipe(
             prompt,
             max_new_tokens=max_tokens,
@@ -65,9 +73,11 @@ class LocalModel(ModelInterface):
             top_p=top_p,
             return_full_text=False
         )
-        
+
         response = outputs[0]["generated_text"]
-        yield response.strip()
+        # Only return the first line (up to next newline or end)
+        first_line = response.strip().split("\n")[0]
+        yield first_line
 
 class APIModel(ModelInterface):
     """API model implementation using HuggingFace Inference Client"""
