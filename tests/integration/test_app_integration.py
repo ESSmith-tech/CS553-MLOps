@@ -3,7 +3,6 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from src.app import ChatApp
 
-@pytest.mark.integration
 def test_app_api_model_response():
     """Test ChatApp end-to-end with API model using HF_TOKEN from environment."""
     hf_token = os.environ.get("HF_TOKEN")
@@ -30,14 +29,13 @@ def test_app_api_model_response():
         hf_token=token_obj,
         use_local_model=False
     )
-    print(gen)
-    # Get first response
     first = next(gen)
     assert isinstance(first, str)
-    assert len(first) > 0, f"{gen}"
+    
+    full_response = ''.join(list(gen))
+    assert len(full_response) > 0
 
 
-@pytest.mark.integration
 def test_app_local_model_response():
     """Test ChatApp end-to-end with local model, waiting for model readiness."""
     app = ChatApp()
