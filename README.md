@@ -1,5 +1,5 @@
 ---
-title: CSDS553 Demo
+title: Diogenic AI
 emoji: 💬
 colorFrom: yellow
 colorTo: purple
