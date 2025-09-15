@@ -18,7 +18,7 @@ If all of the tests pass, then GitHub will sync. A message will be sent to the t
 
 This github links to huggingface: [CSDS553 Demo - a Hugging Face Space by essmith46er](https://huggingface.co/spaces/essmith46er/CSDS553_Demo)
 
-The folder .github syncs github with huggingface and sends notifications to discord
+The .github folder syncs github with huggingface and sends notifications to discord
 
 The Cm folder contains the structure for the philosophers and the user interface 
 
